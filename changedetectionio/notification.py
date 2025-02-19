@@ -134,6 +134,14 @@ def process_notification(n_object, datastore):
                 n_title = n_title[0:payload_max_size]
                 n_body = n_body[0:body_limit]
 
+                # Extra discord-specific format when parsing as Markdown
+                if n_object['notification_format'] == "Markdown":
+                    n_body = n_body.replace('(removed)', '-')
+                    n_body = n_body.replace('(changed)', '-')
+                    n_body = n_body.replace('(added)', '+')
+                    n_body = n_body.replace('(into)', '+')
+                    n_body = '```diff\n' + n_body + '\n```'
+
             elif url.startswith('mailto'):
                 # Apprise will default to HTML, so we need to override it
                 # So that whats' generated in n_body is in line with what is going to be sent.
